@@ -1,8 +1,8 @@
 (function () {
   function addInfoButtons() {
-    const allTextNodes = document.querySelectorAll("label, .label, .field-label, .title, .form_label");
+    const labels = document.querySelectorAll("label, .label, .field-label, .title, .form_label");
 
-    allTextNodes.forEach((node) => {
+    labels.forEach((node) => {
       if (node.dataset.infoProcessed === "true") return;
 
       const raw = node.textContent;
@@ -15,41 +15,28 @@
       node.dataset.infoProcessed = "true";
       node.textContent = cleanedText + " ";
 
-      const btn = document.createElement("button");
-      btn.type = "button";
-      btn.className = "custom-info-btn";
-      btn.setAttribute("aria-label", "More info");
-      btn.innerText = "i";
+      const wrap = document.createElement("span");
+      wrap.className = "custom-info-wrap";
+
+      const icon = document.createElement("span");
+      icon.className = "custom-info-icon";
+      icon.innerText = "i";
 
       const tip = document.createElement("span");
       tip.className = "custom-info-tip";
       tip.textContent = infoText;
 
-      const wrap = document.createElement("span");
-      wrap.className = "custom-info-wrap";
-      wrap.appendChild(btn);
+      wrap.appendChild(icon);
       wrap.appendChild(tip);
 
       node.appendChild(wrap);
-
-      btn.addEventListener("click", function (e) {
-        e.preventDefault();
-        e.stopPropagation();
-        wrap.classList.toggle("open");
-      });
-    });
-
-    document.addEventListener("click", function () {
-      document.querySelectorAll(".custom-info-wrap.open").forEach((el) => {
-        el.classList.remove("open");
-      });
     });
   }
 
   function init() {
     addInfoButtons();
 
-    const observer = new MutationObserver(() => addInfoButtons());
+    const observer = new MutationObserver(addInfoButtons);
     observer.observe(document.body, { childList: true, subtree: true });
   }
 
